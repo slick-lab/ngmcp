@@ -1,0 +1,37 @@
+require "kemal"
+require "./src/*"
+
+
+spawn do
+  start_worker
+end
+
+post "/auth/google" do |env|
+  token = env.params.json["token"].as(String)
+  validate_token(token)
+end
+
+get "/ads" do |env|
+  ads = db.get_all_ads
+  ads.to_json
+end
+
+get "/ads/user" do |env|
+  user_id = env.params.query["user_id"].as(String)
+  ads = db.get_ads_by_user(user_id)
+  ads.to_json
+end
+
+post "/ads/submit" do |env|
+  user_id = env.params.json["user_id"].as(String)
+  title = env.params.json["title"].as(String)
+  description = env.params.json["description"].as(String)
+  price = env.params.json["price"].as(String)
+  phone = env.params.json["phone"].as(String)
+  photo_url = env.params.json["photo_url"].as(String)
+  location = env.params.json["location"].as(String)
+  db.submit_ad(user_id, title, description, price, phone, photo_url, location)
+  {"success" => true}.to_json
+end
+
+Kemal.run
