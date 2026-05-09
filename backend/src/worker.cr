@@ -5,7 +5,7 @@ def start_worker
   loop do 
     begin
      expired_ads = Db.working_expired_ads
-       if expired_ads.nil?
+       if expired_ads.empty?
         puts "no expired ads found"
       else 
         puts "found expired ads deactivating.."
