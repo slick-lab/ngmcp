@@ -5,15 +5,16 @@ require "./src/*"
 spawn do
   start_worker
 end
+
 before_all do |env|
   env.response.headers.add("Access-Control-Allow-Origin", "*")
   env.response.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
   env.response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-  # If the request is a preflight OPTIONS request, halt and return a 200 immediately
   if env.request.method.downcase == "options"
     env.response.status_code = 200
-    env.render "" # Exits the handler chain cleanly
+    env.response.print "" # Write empty body directly to response
+    next                  # Move to the next phase safely
   end
 end
 
