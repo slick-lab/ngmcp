@@ -1,4 +1,4 @@
-require "http'/client"
+require "http/client"
 require "openssl/hmac"
 require "json"
 
