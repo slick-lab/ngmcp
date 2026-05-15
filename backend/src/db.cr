@@ -35,7 +35,7 @@ require "pg"
     end
 
     def self.get_id(email : String)
-      DBU.query_one!( "SELECT id FROM users WHERE email = $1", email, as: Int64)
+      DBU.query_one( "SELECT id FROM users WHERE email = $1", email, as: Int64)
     end
 
     def self.expired_ads : Array(Int64)
