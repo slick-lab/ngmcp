@@ -34,4 +34,18 @@ post "/ads/submit" do |env|
   {"success" => true}.to_json
 end
 
+post "/webhook" do |env|
+  payload = env.request.body.gets_to_end
+  signature = env.request.headers["x-paystack-signature"].as_s
+  if PaystackWebhook.verify_signature(payload, signature)
+    event = JSON.parse(payload)["event"].as_s
+    data = JSON.parse(payload)["data"]
+    PaystackWebhook.process(event, data)
+    {"success": true}.to_json
+  else
+    {"error": "invalid signature"}.to_json
+  end
+end
+
 Kemal.run
+puts "Server is running on http://localhost:3000"

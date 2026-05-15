@@ -5,7 +5,7 @@ require "json"
 SECRET_KEY = ENV["PAYSTACK_SK"]
 
 
-class PaystackWebhook
+module PaystackWebhook
 
   def self.verify_signature(payload : String, signature : String) : Bool
     expected = OPENSSL::HMAC.hexdigest(:sha512, SECRET_KEY, payload)
