@@ -26,7 +26,7 @@ module PaystackWebhook
  def self.process_charge_success(data : JSON::Any)
    refrence = data["refrence"].as_s
    amount = data["amount"].as_i
-   paid_at = Time.parse(data["paid_at"].as_s, Time::Format::ISO_8601_DATE_TIME)
+   paid_at = Time.parse_rfc3339(data["paid_at"].as_s)
    customer_email = data["customer"]["email"].as_s
    id = Db.get_id(customer_email)
    update = Db.activate_ads(id)
