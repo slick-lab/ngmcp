@@ -23,7 +23,7 @@ module PaystackWebhook
   end
  end
 
- def process_charge_success(data : JSON::Any)
+ def self.process_charge_success(data : JSON::Any)
    refrence = data["refrence"].as_s
    amount = data["amount"].as_i
    paid_at = Time.parse(data["paid_at"].as_s, Time::Format::ISO_8601_DATE_TIME)
@@ -37,7 +37,7 @@ module PaystackWebhook
    end
  end
 
- def process_invoice_succeeded(data : JSON::Any)
+ def self.process_invoice_succeeded(data : JSON::Any)
    refrence = data["refrence"].as_s
    puts "invoice payment succeeded for #{refrence}"
  end
