@@ -13,7 +13,7 @@ def start_worker
        puts "deactivated #{expired_ads.join(", ")} ads"
      end
      sleep 300
-   rescue Exception => e
+   rescue e
      puts "error: #{e.message}"
    end
   end
