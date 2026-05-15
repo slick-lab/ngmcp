@@ -7,19 +7,20 @@ RUN apk add --no-cache openssl-dev zlib-dev libevent-dev
 WORKDIR /app
 
 # Copy shard.yml first to leverage Docker layer caching
-COPY . /app
+COPY ./shard.yml /app/shard.yml
 # Install dependencies (shards)
 # This installs Kemal and any other libraries in your shard.yml
 RUN shards install 
 
 # Copy the rest of the source code
-COPY . .
+COPY ./src/ /app/src
+COPY ./server.cr /app/server.cr
 
 # Build the app
 # --release: optimizes the binary for speed
 # --static: ensures it runs on the tiny alpine image without needing libraries
 RUN mkdir -p bin
-RUN crystal build server.cr --release --static --no-debug -o bin/server
+RUN crystal build /app/server.cr --release --static --no-debug -o bin/server
 
 # --- Phase 2: Execution ---
 FROM alpine:latest
