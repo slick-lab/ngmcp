@@ -49,9 +49,9 @@ end
 
 post "/webhook" do |env|
   payload = env.request.body.not_nil!.gets_to_end
-  signature = env.request.headers["x-paystack-signature"].as_s
+  signature = env.request.headers["x-paystack-signature"]
   if PaystackWebhook.verify_signature(payload, signature)
-    event = JSON.parse(payload)["event"].as_s
+    event = JSON.parse(payload)["event"].as(string)
     data = JSON.parse(payload)["data"]
     PaystackWebhook.process(event, data)
     {"success": true}.to_json
