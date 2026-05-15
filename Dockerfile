@@ -7,7 +7,7 @@ RUN apk add --no-cache openssl-dev zlib-dev libevent-dev
 WORKDIR /app
 
 # Copy shard.yml first to leverage Docker layer caching
-COPY . /app
+COPY backend/ /app
 
 # Copy the rest of the source code
 RUN shards install
@@ -15,8 +15,7 @@ RUN shards install
 # Build the app
 # --release: optimizes the binary for speed
 # --static: ensures it runs on the tiny alpine image without needing libraries
-RUN mkdir -p bin
-RUN crystal build /app/server.cr --release --static --no-debug -o bin/server
+RUN crystal build server.cr --release --static --no-debug -o app
 
 # --- Phase 2: Execution ---
 FROM alpine:latest
@@ -27,11 +26,11 @@ RUN apk add --no-cache openssl libevent
 WORKDIR /app
 
 # Copy only the compiled binary from the builder stage
-COPY --from=builder /app/bin/server .
+COPY --from=builder /app/app .
 
 # Render uses the PORT environment variable. 
 # Kemal looks for this variable by default.
 EXPOSE 3000
 
 # Run the binary
-CMD ["./server"]
+CMD ["./app"]
