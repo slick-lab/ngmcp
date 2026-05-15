@@ -13,8 +13,7 @@ COPY ./shard.yml /app/shard.yml
 RUN shards install 
 
 # Copy the rest of the source code
-COPY ./src/ /app/src
-COPY ./server.cr /app/server.cr
+COPY . /app
 
 # Build the app
 # --release: optimizes the binary for speed
