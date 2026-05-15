@@ -47,7 +47,7 @@ post "/ads/submit" do |env|
 end
 
 post "/webhook" do |env|
-  payload = env.request.body.gets_to_end
+  payload = env.request.body.not_nil!.gets_to_end
   signature = env.request.headers["x-paystack-signature"].as_s
   if PaystackWebhook.verify_signature(payload, signature)
     event = JSON.parse(payload)["event"].as_s
