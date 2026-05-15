@@ -4,7 +4,7 @@ def start_worker
   puts "starting background worker"
   loop do
     begin
-     expired_ads = Db.working_expiring_ads
+     expired_ads = Db.expired_ads
      if expired_ads.empty?
        puts "no expired ads found"
      else
