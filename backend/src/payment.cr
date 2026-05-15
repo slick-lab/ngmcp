@@ -19,7 +19,7 @@ module PaystackWebhook
      when "invoice.payment_succeeded"
       process_invoice_succeeded(data)
     else
-    put "error unhandled event #{event}"
+    puts "error unhandled event #{event}"
   end
  end
 
