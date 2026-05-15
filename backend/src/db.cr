@@ -1,7 +1,7 @@
 require "pg"
-  DB = PG.connect(ENV["DATABASE_URL"])
+  DBU = PG.connect(ENV["DATABASE_URL"])
 
-  DB.exec <<-SQL
+  DBU.exec <<-SQL
    CREATE TABLE IF NOT EXISTS users (
      id SERIAL PRIMARY KEY,
      email TEXT UNIQUE NOT NULL,
@@ -11,7 +11,7 @@ require "pg"
    )
   SQL
 
-  DB.exec <<-SQL
+  DBU.exec <<-SQL
    CREATE TABLE IF NOT EXISTS ads (
      id SERIAL PRIMARY KEY,
      user_id INTEGER NOT NULL REFERENCES users(id),
@@ -29,42 +29,42 @@ require "pg"
 
   module Db
     def self.find_or_create_user(email : String, name : String)
-      result = DB.query_one?( "SELECT id FROM users WHERE email = $1", email, as: Int64)
+      result = DBU.query_one?( "SELECT id FROM users WHERE email = $1", email, as: Int64)
       return result if result
-      DB.exec( "INSERT INTO users (email, name) VALUES ($1, $2)", email, name)
+      DBU.exec( "INSERT INTO users (email, name) VALUES ($1, $2)", email, name)
     end
 
     def self.get_id(email : String)
-      DB.query_one!( "SELECT id FROM users WHERE email = $1", email, as: Int64)
+      DBU.query_one!( "SELECT id FROM users WHERE email = $1", email, as: Int64)
     end
 
     def self.expired_ads : Array(Int64)
-      DB.query_all("SELECT id FROM ads WHERE is_active = true AND paid_at <= NOW() - INTERVAL '7 days'", as: Int64)
+      DBU.query_all("SELECT id FROM ads WHERE is_active = true AND paid_at <= NOW() - INTERVAL '7 days'", as: Int64)
     end
 
     def self.deactivate_ads(ids : Array(Int64))
       return if ids.empty?
-      DB.exec("UPDATE ads SET is_active = FALSE WHERE id IN (#{ids.join(",")})")
+      DBU.exec("UPDATE ads SET is_active = FALSE WHERE id IN (#{ids.join(",")})")
     end
 
     def self.activate_ads(user_id : String)
-      DB.exec("UPDATE ads SET is_active = true WHERE user_id = $1", user_id)
+      DBU.exec("UPDATE ads SET is_active = true WHERE user_id = $1", user_id)
     end
 
     def self.get_all_ads
-      DB.query_all("SELECT * FROM ads", as: Hash(String, String))
+      DBU.query_all("SELECT * FROM ads", as: Hash(String, String))
     end
 
     def self.get_ads_by_user(user_id : String)
-      DB.query_all("SELECT * FROM ads WHERE user_id = $1", user_id, as: Hash(String, String))
+      DBU.query_all("SELECT * FROM ads WHERE user_id = $1", user_id, as: Hash(String, String))
     end
 
     def self.submit_ad(user_id : String, title : String, description : String, price : String, phone : String, photo_url : String, location : String)
       return nil if title.empty? || description.empty? || price.empty? || phone.empty? || photo_url.empty? || location.empty?
       if
-       DB.exec("SELECT * FROM ads WHERE user_id = $1", user_id)
+       DBU.exec("SELECT * FROM ads WHERE user_id = $1", user_id)
        return nil
       end
-      DB.exec("INSERT INTO ads (user_id, title, description, price, phone, photo_url, location) VALUES ($1, $2, $3, $4, $5, $6, $7)", user_id, title, description, price, phone, photo_url, location)
+      DBU.exec("INSERT INTO ads (user_id, title, description, price, phone, photo_url, location) VALUES ($1, $2, $3, $4, $5, $6, $7)", user_id, title, description, price, phone, photo_url, location)
     end
   end
