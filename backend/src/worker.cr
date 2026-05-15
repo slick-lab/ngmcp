@@ -12,7 +12,7 @@ def start_worker
        Db.deactivate_ads(expired_ads)
        puts "deactivated #{expired_ads.join(", ")} ads"
      end
-     sleep 300
+     sleep 700
    rescue e
      puts "error: #{e.message}"
    end
