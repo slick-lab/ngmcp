@@ -28,7 +28,7 @@ module PaystackWebhook
    amount = data["amount"].as_i
    paid_at = Time.parse_rfc3339(data["paid_at"].as_s)
    customer_email = data["customer"]["email"].as_s
-   id = Db.get_id(customer_email)
+   id = Db.get_id(customer_email).to_s
    update = Db.activate_ads(id)
    if update
     {"success": true, "message": "updated user ads for #{customer_email}"}.to_json
