@@ -3,4 +3,4 @@ version: 0.1.0
 
 dependencies:
   kemal:
-    github: kemalcr/kemall
+    github: kemalcr/kemal
