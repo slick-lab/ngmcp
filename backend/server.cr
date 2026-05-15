@@ -30,7 +30,7 @@ post "/ads/submit" do |env|
   phone = env.params.json["phone"].as(String)
   photo_url = env.params.json["photo_url"].as(String)
   location = env.params.json["location"].as(String)
-  db.submit_ad(user_id, title, description, price, phone, photo_url, location)
+  Db.submit_ad(user_id, title, description, price, phone, photo_url, location)
   {"success" => true}.to_json
 end
 
