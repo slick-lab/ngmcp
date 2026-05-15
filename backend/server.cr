@@ -12,13 +12,13 @@ post "/auth/google" do |env|
 end
 
 get "/ads" do |env|
-  ads = db.get_all_ads
+  ads = Db.get_all_ads
   ads.to_json
 end
 
 get "/ads/user" do |env|
   user_id = env.params.query["user_id"].as(String)
-  ads = db.get_ads_by_user(user_id)
+  ads = Db.get_ads_by_user(user_id)
   ads.to_json
 end
 
